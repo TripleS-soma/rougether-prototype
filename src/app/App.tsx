@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { RoutineScreen } from "./components/RoutineScreen";
 import { RoomDecorScreen } from "./components/RoomDecorScreen";
 import { GroupHouseScreen } from "./components/GroupHouseScreen";
 import {
@@ -9,10 +8,7 @@ import {
   ROUTINE_CATEGORIES,
 } from "./components/MyRoomZoomScreen";
 import { FriendRoomScreen } from "./components/FriendRoomScreen";
-import { CatGrowthScreen } from "./components/CatGrowthScreen";
-import { GroupMissionScreen } from "./components/GroupMissionScreen";
 import { SettingsScreen } from "./components/SettingsScreen";
-import { GroupChatScreen } from "./components/GroupChatScreen";
 import { AddRoutineScreen } from "./components/AddRoutineScreen";
 import { RoutineManageScreen } from "./components/RoutineManageScreen";
 import { GachaScreen } from "./components/GachaScreen";
@@ -23,17 +19,14 @@ import { HouseSearchScreen } from "./components/HouseSearchScreen";
 import { CreateHouseScreen } from "./components/CreateHouseScreen";
 import { BottomNav, BottomNavTab } from "./components/BottomNav";
 import { DEFAULT_OWNED_FURNITURE_IDS } from "./components/furniture";
+import { CharacterId, DEFAULT_CHARACTER_ID } from "./components/character";
 
 type Screen =
-  | "routine"
   | "decor"
   | "groupHouse"
   | "myRoom"
   | "friendRoom"
-  | "growth"
-  | "mission"
   | "settings"
-  | "groupChat"
   | "addRoutine"
   | "routineManage"
   | "gacha"
@@ -49,6 +42,8 @@ export default function App() {
     new Set(["hanok-bed", "hanok-shelf", "hanok-window", "hanok-drawer", "hanok-armchair", "hanok-plant", "hanok-rug", "hanok-teatable"])
   );
   const [wallpaperId, setWallpaperId] = useState<string>("beige");
+  const [characterId, setCharacterId] = useState<CharacterId>(DEFAULT_CHARACTER_ID);
+  const [leafBalance, setLeafBalance] = useState(5600);
   const [ownedFurniture, setOwnedFurniture] = useState<Set<string>>(
     () => new Set(DEFAULT_OWNED_FURNITURE_IDS)
   );
@@ -83,15 +78,11 @@ export default function App() {
   };
 
   const tabForScreen: Record<Screen, BottomNavTab | null> = {
-    routine: "myRoom",
     decor: "myRoom",
     myRoom: "myRoom",
     friendRoom: "house",
     groupHouse: "house",
-    growth: "myRoom",
-    mission: "house",
     settings: "settings",
-    groupChat: "house",
     addRoutine: "myRoom",
     routineManage: "myRoom",
     gacha: "myRoom",
@@ -112,13 +103,13 @@ export default function App() {
     <div className="size-full flex items-center justify-center bg-[#E8DCC8]">
       <div className="w-full max-w-md h-full bg-[#FBF8F3] relative shadow-2xl overflow-hidden">
         <div className="h-full overflow-y-auto" key={currentScreen}>
-          {currentScreen === "routine" && <RoutineScreen />}
           {currentScreen === "decor" && (
             <RoomDecorScreen
               onBack={() => setCurrentScreen("myRoom")}
               initialPlaced={placedFurniture}
               initialWallpaperId={wallpaperId}
               owned={ownedFurniture}
+              characterId={characterId}
               onApply={(next, wp) => {
                 setPlacedFurniture(next);
                 setWallpaperId(wp);
@@ -132,14 +123,12 @@ export default function App() {
                 setCurrentScreen("friendRoom");
               }}
               onVisitMyRoom={() => setCurrentScreen("myRoom")}
-              onOpenChat={() => setCurrentScreen("groupChat")}
               onOpenSearch={() => setCurrentScreen("houseSearch")}
               placedFurniture={placedFurniture}
               wallpaperId={wallpaperId}
+              characterId={characterId}
+              leafBalance={leafBalance}
             />
-          )}
-          {currentScreen === "groupChat" && (
-            <GroupChatScreen onBack={() => setCurrentScreen("groupHouse")} />
           )}
           {currentScreen === "myRoom" && (
             <MyRoomZoomScreen
@@ -150,6 +139,7 @@ export default function App() {
               wallpaperId={wallpaperId}
               routines={routines}
               categories={categories}
+              characterId={characterId}
               onToggleRoutine={toggleRoutine}
               onQuickAddRoutine={(category, title) =>
                 setRoutines((prev) => [
@@ -243,6 +233,10 @@ export default function App() {
             <FriendRoomScreen
               onBack={() => setCurrentScreen("groupHouse")}
               friendName={visitingFriend}
+              placedFurniture={placedFurniture}
+              wallpaperId={wallpaperId}
+              routines={routines.filter((routine) => routine.kind !== "todo")}
+              characterId={characterId}
             />
           )}
           {currentScreen === "auth" && (
@@ -258,7 +252,12 @@ export default function App() {
             />
           )}
           {currentScreen === "onboarding" && (
-            <OnboardingScreen onDone={() => setCurrentScreen("myRoom")} />
+            <OnboardingScreen
+              onDone={(_, selectedCharacterId) => {
+                if (selectedCharacterId) setCharacterId(selectedCharacterId);
+                setCurrentScreen("myRoom");
+              }}
+            />
           )}
           {currentScreen === "houseSearch" && (
             <HouseSearchScreen
@@ -276,14 +275,20 @@ export default function App() {
           {currentScreen === "gacha" && (
             <GachaScreen
               onBack={() => setCurrentScreen("myRoom")}
+              leafBalance={leafBalance}
+              onSpendLeaves={(amount) => {
+                if (leafBalance < amount) return false;
+                setLeafBalance((prev) => prev - amount);
+                return true;
+              }}
               onObtain={(ids) =>
                 setOwnedFurniture((prev) => new Set([...prev, ...ids]))
               }
             />
           )}
-          {currentScreen === "growth" && <CatGrowthScreen />}
-          {currentScreen === "mission" && <GroupMissionScreen />}
-          {currentScreen === "settings" && <SettingsScreen />}
+          {currentScreen === "settings" && (
+            <SettingsScreen onLogout={() => setCurrentScreen("auth")} />
+          )}
         </div>
 
         {tabForScreen[currentScreen] && (

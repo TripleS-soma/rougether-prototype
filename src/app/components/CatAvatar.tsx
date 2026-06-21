@@ -1,5 +1,5 @@
-import catNormal from "../../imports/image-1.png";
-import catHappy from "../../imports/image-2.png";
+import catNormal from "../../imports/character/cat-1.png";
+import catHappy from "../../imports/character/cat-2.png";
 
 interface CatAvatarProps {
   size?: number;

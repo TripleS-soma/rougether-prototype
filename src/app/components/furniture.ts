@@ -1,30 +1,33 @@
 import type { CSSProperties } from "react";
-import imgMirror from "../../imports/가구/eddfe86e5a2032bb969dc9b8c751b5fe3d193ee7.png";
-import imgRug from "../../imports/가구/81135942a1e4a5837215c9b18b35e0e07b8a9810.png";
-import imgClock from "../../imports/가구/a6bbd019d58714fccd73871365eb8dcbb9dffd1a.png";
-import imgLamp from "../../imports/가구/d31ebf33275efbd18076595867876807f83da709.png";
-import imgWindow from "../../imports/가구/ce544a3b81978b5a44b4c29169475dde9fa4a99f.png";
-import imgPlant from "../../imports/가구/2c93434ddb8fb26189185f452f005139554f00d4.png";
-import imgCushion from "../../imports/가구/6d24a40aeb6e3c7078e700461101166ce4ddb189.png";
-import imgShelf from "../../imports/가구/44e046cbca7d54d13ef792817f227191208833ba.png";
-import imgBed from "../../imports/가구/1ef11fcd8643a9a49305303823c668a3ff554e36.png";
-import imgDrawer from "../../imports/가구/584ba16cf578863f0f63c1822006d1ce03a32921.png";
-import imgSofa from "../../imports/가구/fab3e27133274d705a0c34d6c98ba975dabc616d.png";
-import imgTv from "../../imports/가구/e7774d15cdf7e869c9e644ab773a34d7db0ee9bd.png";
-import imgDesk from "../../imports/가구/fb9d206a137526f99c489c0674663e0ca3f9719e.png";
-import bgSimple from "../../imports/___________.png";
-import bgPaw from "../../imports/____________.png";
-import bgFlower from "../../imports/__________.png";
+import imgMirror from "../../imports/furniture/Basic_chair_mirror.png";
+import imgRug from "../../imports/furniture/Basic_rug_rug.png";
+import imgClock from "../../imports/furniture/Basic_shelf_clock.png";
+import imgLamp from "../../imports/furniture/Basic_chair_lamp.png";
+import imgWindow from "../../imports/furniture/Basic_window_window.png";
+import imgPlant from "../../imports/furniture/Basic_plant_plant.png";
+import imgCushion from "../../imports/furniture/Basic_chair_cushion.png";
+import imgShelf from "../../imports/furniture/Basic_shelf_shelf.png";
+import imgBed from "../../imports/furniture/Basic_bed_bed.png";
+import imgDrawer from "../../imports/furniture/Basic_storage_drawer.png";
+import imgSofa from "../../imports/furniture/Basic_bed_sofa.png";
+import imgTv from "../../imports/furniture/Basic_storage_tv.png";
+import imgDesk from "../../imports/furniture/Basic_storage_desk.png";
+import bgSimple from "../../imports/wallpaper/Basic_wallpaper_simple.png";
+import bgPaw from "../../imports/wallpaper/Basic_wallpaper_paw.png";
+import bgFlower from "../../imports/wallpaper/Basic_wallpaper_flower.png";
+import bgForestSimple from "../../imports/wallpaper/Forest_wallpaper_simple.png";
+import bgForestGrass from "../../imports/wallpaper/Forest_wallpaper_grass.png";
+import bgHanokSimple from "../../imports/wallpaper/Hanok_wallpaper_simple.png";
 // 고즈넉 한옥 테마 가구 (뽑기 보상)
-import imgHanokBed from "../../imports/\uAC00\uAD6C/image-9.png";
-import imgHanokArmchair from "../../imports/\uAC00\uAD6C/image-10.png";
-import imgHanokDesk from "../../imports/\uAC00\uAD6C/image-11.png";
-import imgHanokShelf from "../../imports/\uAC00\uAD6C/image-12.png";
-import imgHanokRug from "../../imports/\uAC00\uAD6C/image-13.png";
-import imgHanokPlant from "../../imports/\uAC00\uAD6C/image-14.png";
-import imgHanokWindow from "../../imports/\uAC00\uAD6C/image-15.png";
-import imgHanokDrawer from "../../imports/\uAC00\uAD6C/image-16.png";
-import imgHanokTeaTable from "../../imports/\uAC00\uAD6C/image-17.png";
+import imgHanokBed from "../../imports/furniture/Hanok_bed_bed.png";
+import imgHanokArmchair from "../../imports/furniture/Hanok_chair_armchair.png";
+import imgHanokDesk from "../../imports/furniture/Hanok_storage_desk.png";
+import imgHanokShelf from "../../imports/furniture/Hanok_shelf_shelf.png";
+import imgHanokRug from "../../imports/furniture/Hanok_rug_rug.png";
+import imgHanokPlant from "../../imports/furniture/Hanok_plant_plant.png";
+import imgHanokWindow from "../../imports/furniture/Hanok_window_window.png";
+import imgHanokDrawer from "../../imports/furniture/Hanok_storage_drawer.png";
+import imgHanokTeaTable from "../../imports/furniture/Hanok_table_teatable.png";
 
 export type Rarity = "일반" | "희귀" | "전설";
 
@@ -90,6 +93,30 @@ export const WALLPAPERS: Wallpaper[] = [
       "bg-gradient-to-b from-[#F4D4D8] to-[#FBE6E8]",
   },
   {
+    id: "forest-simple",
+    name: "\uC232\uC18D \uBCBD\uC9C0",
+    price: 500,
+    backgroundImage: bgForestSimple,
+    previewClass:
+      "bg-gradient-to-b from-[#DDEAD2] to-[#F3E8D3]",
+  },
+  {
+    id: "forest-grass",
+    name: "\uD480\uB978 \uC232 \uBCBD\uC9C0",
+    price: 500,
+    backgroundImage: bgForestGrass,
+    previewClass:
+      "bg-gradient-to-b from-[#C8E4D4] to-[#E4F0E0]",
+  },
+  {
+    id: "hanok-simple",
+    name: "\uD55C\uC625 \uBCBD\uC9C0",
+    price: 600,
+    backgroundImage: bgHanokSimple,
+    previewClass:
+      "bg-gradient-to-b from-[#E8DCC8] to-[#F5E6D3]",
+  },
+  {
     id: "mint",
     name: "민트 숲",
     price: 400,
@@ -119,18 +146,18 @@ export const DEFAULT_WALLPAPER_ID = "simple";
 
 export const FURNITURE_SLOT_STYLES: Record<FurnitureSlot, CSSProperties> = {
   shelf: { left: "11%", top: "14%", width: "22%" },
-  window: { right: "12%", top: "14%", width: "20%" },
+  window: { right: "12%", top: "10%", width: "20%" },
   bed: { left: "6%", top: "38%", width: "34%" },
   storage: { left: "47%", top: "45%", width: "18%" },
-  chair: { right: "6%", top: "44%", width: "28%" },
-  plant: { left: "15%", bottom: "16%", width: "13%" },
+  chair: { right: "4%", top: "40%", width: "28%" },
+  plant: { left: "10%", bottom: "14%", width: "13%" },
   rug: {
-    left: "33%",
+    left: "50%",
     bottom: "7%",
     width: "38%",
     transform: "translateX(-50%)",
   },
-  table: { right: "8%", bottom: "13%", width: "25%" },
+  table: { right: "4%", bottom: "13%", width: "25%" },
 };
 
 export const FURNITURE_SLOT_BY_ID: Record<string, FurnitureSlot> = {
@@ -174,7 +201,7 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     price: 800,
     image: imgBed,
     category: "가구",
-    placedStyle: { right: "8%", top: "30%", width: "38%" },
+    placedStyle: FURNITURE_SLOT_STYLES["bed"],
     zIndex: 2,
   },
   {
@@ -183,7 +210,7 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     price: 700,
     image: imgSofa,
     category: "가구",
-    placedStyle: { left: "6%", top: "35%", width: "44%" },
+    placedStyle: FURNITURE_SLOT_STYLES["bed"],
     zIndex: 2,
   },
   {
@@ -192,7 +219,7 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     price: 600,
     image: imgDesk,
     category: "가구",
-    placedStyle: { right: "6%", bottom: "20%", width: "32%" },
+    placedStyle: FURNITURE_SLOT_STYLES["storage"],
     zIndex: 3,
   },
   {
@@ -201,7 +228,7 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     price: 500,
     image: imgDrawer,
     category: "가구",
-    placedStyle: { left: "6%", bottom: "18%", width: "24%" },
+    placedStyle: FURNITURE_SLOT_STYLES["storage"],
     zIndex: 3,
   },
   {
@@ -210,7 +237,7 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     price: 450,
     image: imgShelf,
     category: "가구",
-    placedStyle: { left: "14%", top: "8%", width: "28%" },
+    placedStyle: FURNITURE_SLOT_STYLES["shelf"],
     zIndex: 1,
   },
   {
@@ -219,7 +246,7 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     price: 900,
     image: imgTv,
     category: "가구",
-    placedStyle: { right: "37%", bottom: "22%", width: "30%" },
+    placedStyle: FURNITURE_SLOT_STYLES["storage"],
     zIndex: 3,
   },
   {
@@ -228,7 +255,7 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     price: 350,
     image: imgLamp,
     category: "조명",
-    placedStyle: { right: "0%", top: "30%", width: "16%" },
+    placedStyle: FURNITURE_SLOT_STYLES["chair"],
     zIndex: 1,
   },
   {
@@ -237,7 +264,7 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     price: 300,
     image: imgClock,
     category: "장식",
-    placedStyle: { left: "44%", top: "4%", width: "16%" },
+    placedStyle: FURNITURE_SLOT_STYLES["shelf"],
     zIndex: 1,
   },
   {
@@ -246,7 +273,7 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     price: 320,
     image: imgMirror,
     category: "장식",
-    placedStyle: { right: "4%", bottom: "6%", width: "18%" },
+    placedStyle: FURNITURE_SLOT_STYLES["chair"],
     zIndex: 3,
   },
   {
@@ -255,7 +282,7 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     price: 400,
     image: imgWindow,
     category: "장식",
-    placedStyle: { right: "14%", top: "8%", width: "22%" },
+    placedStyle: FURNITURE_SLOT_STYLES["window"],
     zIndex: 1,
   },
   {
@@ -264,7 +291,7 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     price: 250,
     image: imgPlant,
     category: "장식",
-    placedStyle: { left: "2%", bottom: "14%", width: "18%" },
+    placedStyle: FURNITURE_SLOT_STYLES["plant"],
     zIndex: 4,
   },
   {
@@ -273,7 +300,7 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     price: 200,
     image: imgCushion,
     category: "장식",
-    placedStyle: { left: "38%", bottom: "7%", width: "20%" },
+    placedStyle: FURNITURE_SLOT_STYLES["chair"],
     zIndex: 4,
   },
   {
@@ -282,12 +309,7 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     price: 380,
     image: imgRug,
     category: "러그",
-    placedStyle: {
-      left: "50%",
-      bottom: "6%",
-      width: "60%",
-      transform: "translateX(-50%)",
-    },
+    placedStyle: FURNITURE_SLOT_STYLES["rug"],
     zIndex: 0,
   },
 
@@ -300,12 +322,7 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     category: "한옥",
     theme: "hanok",
     rarity: "일반",
-    placedStyle: {
-      left: "33%",
-      bottom: "7%",
-      width: "38%",
-      transform: "translateX(-50%)",
-    },
+    placedStyle: FURNITURE_SLOT_STYLES["rug"],
     zIndex: 0,
   },
   {
@@ -316,7 +333,7 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     category: "한옥",
     theme: "hanok",
     rarity: "전설",
-    placedStyle: { left: "6%", top: "38%", width: "34%" },
+    placedStyle: FURNITURE_SLOT_STYLES["bed"],
     zIndex: 2,
   },
   {
@@ -327,7 +344,7 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     category: "한옥",
     theme: "hanok",
     rarity: "희귀",
-    placedStyle: { right: "6%", top: "44%", width: "28%" },
+    placedStyle: FURNITURE_SLOT_STYLES["chair"],
     zIndex: 3,
   },
   {
@@ -338,7 +355,7 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     category: "한옥",
     theme: "hanok",
     rarity: "희귀",
-    placedStyle: { left: "44%", top: "43%", width: "22%" },
+    placedStyle: FURNITURE_SLOT_STYLES["storage"],
     zIndex: 3,
   },
   {
@@ -349,7 +366,7 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     category: "한옥",
     theme: "hanok",
     rarity: "희귀",
-    placedStyle: { left: "11%", top: "14%", width: "22%" },
+    placedStyle: FURNITURE_SLOT_STYLES["shelf"],
     zIndex: 1,
   },
   {
@@ -360,7 +377,7 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     category: "한옥",
     theme: "hanok",
     rarity: "일반",
-    placedStyle: { right: "12%", top: "14%", width: "20%" },
+    placedStyle: FURNITURE_SLOT_STYLES["window"],
     zIndex: 1,
   },
   {
@@ -371,7 +388,7 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     category: "한옥",
     theme: "hanok",
     rarity: "희귀",
-    placedStyle: { left: "47%", top: "45%", width: "18%" },
+    placedStyle: FURNITURE_SLOT_STYLES["storage"],
     zIndex: 3,
   },
   {
@@ -382,7 +399,7 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     category: "한옥",
     theme: "hanok",
     rarity: "일반",
-    placedStyle: { left: "15%", bottom: "16%", width: "13%" },
+    placedStyle: FURNITURE_SLOT_STYLES["plant"],
     zIndex: 4,
   },
   {
@@ -393,7 +410,7 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     category: "한옥",
     theme: "hanok",
     rarity: "희귀",
-    placedStyle: { right: "8%", bottom: "13%", width: "25%" },
+    placedStyle: FURNITURE_SLOT_STYLES["table"],
     zIndex: 3,
   },
 ];

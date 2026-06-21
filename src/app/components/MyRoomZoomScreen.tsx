@@ -21,25 +21,7 @@ import {
   getFurniturePlacement,
 } from "./furniture";
 import { CatAvatar } from "./CatAvatar";
-import cat1 from "../../imports/image-1.png";
-import cat2 from "../../imports/image-2.png";
-import cat3 from "../../imports/image-3.png";
-import cat4 from "../../imports/image-4.png";
-import dog1 from "../../imports/image-5.png";
-import dog2 from "../../imports/image-6.png";
-import dog3 from "../../imports/image-7.png";
-import dog4 from "../../imports/image-8.png";
-
-const CAT_POSES = [
-  cat1,
-  cat2,
-  cat3,
-  cat4,
-  dog1,
-  dog2,
-  dog3,
-  dog4,
-];
+import { CharacterId, DEFAULT_CHARACTER_ID, getCharacterOption } from "./character";
 
 export type RoutineCategory = string;
 
@@ -115,6 +97,7 @@ interface MyRoomZoomScreenProps {
   onQuickAddRoutine?: (category: string, title: string) => void;
   onRenameRoutine?: (id: string, title: string) => void;
   onDeleteRoutine?: (id: string) => void;
+  characterId?: CharacterId;
 }
 
 export function MyRoomZoomScreen({
@@ -129,6 +112,7 @@ export function MyRoomZoomScreen({
   onQuickAddRoutine,
   onRenameRoutine,
   onDeleteRoutine,
+  characterId = DEFAULT_CHARACTER_ID,
 }: MyRoomZoomScreenProps = {}) {
   const placed = placedFurniture ?? new Set<string>();
   const wallpaper =
@@ -136,7 +120,8 @@ export function MyRoomZoomScreen({
       (w) => w.id === (wallpaperId ?? DEFAULT_WALLPAPER_ID),
     ) ?? WALLPAPERS[0];
 
-  const [catIndex, setCatIndex] = useState(0);
+  const character = getCharacterOption(characterId);
+  const [characterFrame, setCharacterFrame] = useState(0);
   const [addingCategory, setAddingCategory] = useState<string | null>(null);
   const [newTodo, setNewTodo] = useState("");
   const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
@@ -221,7 +206,11 @@ export function MyRoomZoomScreen({
       <div className="bg-white shadow-sm px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-[#F5E6D3] flex items-center justify-center overflow-hidden p-1">
-            <CatAvatar size={36} />
+            <img
+              src={character.images[0]}
+              alt={character.name}
+              className="h-9 w-9 object-contain"
+            />
           </div>
           <div>
             <h2 className="text-lg font-bold text-[#4A403A]">
@@ -275,17 +264,28 @@ export function MyRoomZoomScreen({
           {/* Cat character (click to change pose) */}
           <button
             onClick={() =>
-              setCatIndex((i) => (i + 1) % CAT_POSES.length)
+              setCharacterFrame((i) => (i + 1) % character.images.length)
             }
             className="absolute bottom-12 left-1/2 -translate-x-1/2 hover:scale-110 active:scale-95 transition-transform"
             style={{ zIndex: 5 }}
-            aria-label="고양이 표정 바꾸기"
+            aria-label="\uCE90\uB9AD\uD130 \uC0AC\uC9C4 \uBC14\uAFB8\uAE30"
           >
             <img
-              src={CAT_POSES[catIndex]}
-              alt="cat"
+              src={character.images[characterFrame]}
+              alt={character.name}
               className="w-[120px] h-[120px] object-contain"
             />
+          </button>
+
+          <button
+            type="button"
+            data-capture-hidden="true"
+            onClick={onOpenGacha}
+            className="absolute bottom-[68px] right-4 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-[#4A403A] shadow-lg backdrop-blur-sm transition-colors hover:bg-white"
+            aria-label="\uBF51\uAE30 \uC0C1\uC810"
+            title="\uBF51\uAE30 \uC0C1\uC810"
+          >
+            <Gift size={19} />
           </button>
 
           <button
@@ -586,13 +586,6 @@ export function MyRoomZoomScreen({
 
         {/* Action buttons */}
         <div className="flex gap-3">
-          <button
-            onClick={onOpenGacha}
-            className="flex-1 bg-white border border-[#D4C4B0] text-[#4A403A] py-3 rounded-full flex items-center justify-center gap-2 hover:bg-[#F5F1E8] transition-colors"
-          >
-            <Gift size={20} />
-            뽑기 상점
-          </button>
           <button
             onClick={onEdit}
             className="flex-1 bg-white border border-[#D4C4B0] text-[#4A403A] py-3 rounded-full flex items-center justify-center gap-2 hover:bg-[#F5F1E8] transition-colors"

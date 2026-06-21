@@ -1,7 +1,7 @@
 import { ArrowLeft, Sparkles, Check } from "lucide-react";
 import { useState } from "react";
-import { CatAvatar } from "./CatAvatar";
 import { FURNITURE_ITEMS, WALLPAPERS, DEFAULT_WALLPAPER_ID, getFurniturePlacement, getFurnitureSlot } from "./furniture";
+import { CharacterId, DEFAULT_CHARACTER_ID, getCharacterOption } from "./character";
 
 interface RoomDecorScreenProps {
   onBack?: () => void;
@@ -10,6 +10,7 @@ interface RoomDecorScreenProps {
   /** Furniture ids the user owns (only these appear in the catalog) */
   owned?: Set<string>;
   onApply?: (placed: Set<string>, wallpaperId: string) => void;
+  characterId?: CharacterId;
 }
 
 export function RoomDecorScreen({
@@ -18,7 +19,9 @@ export function RoomDecorScreen({
   initialWallpaperId,
   owned,
   onApply,
+  characterId = DEFAULT_CHARACTER_ID,
 }: RoomDecorScreenProps = {}) {
+  const character = getCharacterOption(characterId);
   const categories = ["전체", "벽지", "가구", "장식", "조명", "러그", "한옥"];
 
   const ownedItems = owned
@@ -101,7 +104,11 @@ export function RoomDecorScreen({
           ))}
 
           <div className="absolute bottom-12 left-1/2 -translate-x-1/2" style={{ zIndex: 5 }}>
-            <CatAvatar size={120} />
+            <img
+              src={character.images[0]}
+              alt={character.name}
+              className="w-[120px] h-[120px] object-contain"
+            />
           </div>
         </div>
       </div>
@@ -129,19 +136,19 @@ export function RoomDecorScreen({
       {showWallpapers && (
         <div className="px-6 mb-4">
           <h3 className="text-sm font-semibold text-[#8B7E74] mb-3">벽지</h3>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-4 gap-2">
             {WALLPAPERS.map((wp) => {
               const isActive = wp.id === wallpaperId;
               return (
                 <div
                   key={wp.id}
                   onClick={() => setWallpaperId(wp.id)}
-                  className={`bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition-all cursor-pointer ${
+                  className={`bg-white rounded-xl p-2 shadow-sm hover:shadow-md transition-all cursor-pointer ${
                     isActive ? "ring-2 ring-[#7FA87F]" : ""
                   }`}
                 >
                   <div
-                    className={`w-full aspect-square rounded-xl mb-3 ${!wp.backgroundImage ? wp.previewClass : ''}`}
+                    className={`w-full aspect-square rounded-lg mb-1.5 ${!wp.backgroundImage ? wp.previewClass : ''}`}
                     style={
                       wp.backgroundImage
                         ? {
@@ -152,10 +159,10 @@ export function RoomDecorScreen({
                         : undefined
                     }
                   ></div>
-                  <h4 className="text-[#4A403A] font-medium mb-2">{wp.name}</h4>
-                  <div className="flex items-center gap-1">
-                    <Sparkles size={14} className="text-[#D4A574]" />
-                    <span className="text-sm text-[#8B7E74]">{wp.price}</span>
+                  <h4 className="text-[11px] leading-tight text-[#4A403A] font-medium mb-1 line-clamp-2 min-h-[28px]">{wp.name}</h4>
+                  <div className="flex items-center gap-0.5">
+                    <Sparkles size={11} className="text-[#D4A574] flex-shrink-0" />
+                    <span className="text-[10px] text-[#8B7E74]">{wp.price}</span>
                   </div>
                 </div>
               );
@@ -170,28 +177,28 @@ export function RoomDecorScreen({
           {showWallpapers && (
             <h3 className="text-sm font-semibold text-[#8B7E74] mb-3">가구 · 소품</h3>
           )}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-4 gap-2">
             {filteredFurniture.map((item) => {
               const isPlaced = placed.has(item.id);
               return (
                 <div
                   key={item.id}
                   onClick={() => toggle(item.id)}
-                  className={`bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition-all cursor-pointer ${
+                  className={`bg-white rounded-xl p-2 shadow-sm hover:shadow-md transition-all cursor-pointer ${
                     isPlaced ? "ring-2 ring-[#7FA87F]" : ""
                   }`}
                 >
-                  <div className="w-full aspect-square bg-gradient-to-br from-[#F5F1E8] to-[#E8DCC8] rounded-xl mb-3 flex items-center justify-center p-3">
+                  <div className="w-full aspect-square bg-gradient-to-br from-[#F5F1E8] to-[#E8DCC8] rounded-lg mb-1.5 flex items-center justify-center p-1.5">
                     <img
                       src={item.image}
                       alt={item.name}
                       className="max-w-full max-h-full object-contain"
                     />
                   </div>
-                  <h4 className="text-[#4A403A] font-medium mb-2">{item.name}</h4>
-                  <div className="flex items-center gap-1">
-                    <Sparkles size={14} className="text-[#D4A574]" />
-                    <span className="text-sm text-[#8B7E74]">{item.price}</span>
+                  <h4 className="text-[11px] leading-tight text-[#4A403A] font-medium mb-1 line-clamp-2 min-h-[28px]">{item.name}</h4>
+                  <div className="flex items-center gap-0.5">
+                    <Sparkles size={11} className="text-[#D4A574] flex-shrink-0" />
+                    <span className="text-[10px] text-[#8B7E74]">{item.price}</span>
                   </div>
                 </div>
               );

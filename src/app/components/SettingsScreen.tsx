@@ -1,6 +1,10 @@
 import { Bell, User, Lock, HelpCircle, LogOut, ChevronRight, Volume2 } from "lucide-react";
 
-export function SettingsScreen() {
+interface SettingsScreenProps {
+  onLogout?: () => void;
+}
+
+export function SettingsScreen({ onLogout }: SettingsScreenProps = {}) {
   const sections = [
     {
       title: "계정",
@@ -20,7 +24,7 @@ export function SettingsScreen() {
       title: "기타",
       items: [
         { icon: HelpCircle, label: "도움말" },
-        { icon: LogOut, label: "로그아웃" },
+        { icon: LogOut, label: "\uB85C\uADF8\uC544\uC6C3", action: onLogout },
       ],
     },
   ];
@@ -39,9 +43,10 @@ export function SettingsScreen() {
               {section.title}
             </p>
             <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-              {section.items.map(({ icon: Icon, label }, idx) => (
+              {section.items.map(({ icon: Icon, label, action }, idx) => (
                 <button
                   key={label}
+                  onClick={action}
                   className={`w-full flex items-center justify-between px-4 py-3.5 hover:bg-[#F5F1E8] transition-colors ${
                     idx !== section.items.length - 1
                       ? "border-b border-[#E8DCC8]/50"

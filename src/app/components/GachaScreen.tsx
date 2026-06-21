@@ -8,6 +8,8 @@ interface GachaScreenProps {
   onBack?: () => void;
   /** Add obtained furniture ids to the room inventory */
   onObtain?: (furnitureIds: string[]) => void;
+  leafBalance?: number;
+  onSpendLeaves?: (amount: number) => boolean;
 }
 
 // 고즈넉 한옥 테마는 실제 가구 에셋을 보상으로 사용한다
@@ -108,13 +110,24 @@ const BOXES: GachaBox[] = [
   },
 ];
 
-export function GachaScreen({ onBack, onObtain }: GachaScreenProps = {}) {
+export function GachaScreen({ onBack, onObtain, leafBalance = 0, onSpendLeaves }: GachaScreenProps = {}) {
   const [tab, setTab] = useState<Tab>("box");
   const [selectedId, setSelectedId] = useState<string>("hanok");
   const [pulling, setPulling] = useState<{
     theme: GachaBox;
     count: number;
   } | null>(null);
+  const [spendError, setSpendError] = useState("");
+  const startPull = (box: GachaBox, count: number) => {
+    const cost = count === 1 ? 250 : 1250;
+    if (leafBalance < cost || onSpendLeaves?.(cost) === false) {
+      setSpendError("\uC789\uC0AC\uADC0\uAC00 \uBD80\uC871\uD574\uC694.");
+      return;
+    }
+    setSpendError("");
+    setSelectedId(box.id);
+    setPulling({ theme: box, count });
+  };
 
   return (
     <div className="min-h-screen bg-[#FBF8F3] pb-24">
@@ -141,7 +154,7 @@ export function GachaScreen({ onBack, onObtain }: GachaScreenProps = {}) {
               <Leaf size={14} className="text-white" />
             </div>
             <span className="text-sm text-[#8B7E74]">잎사귀</span>
-            <span className="ml-auto text-base font-bold text-[#4A403A]">5,600</span>
+            <span className="ml-auto text-base font-bold text-[#4A403A]">{leafBalance.toLocaleString()}</span>
           </div>
           <div className="bg-white rounded-2xl shadow-sm px-4 py-3 flex items-center gap-2">
             <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#A8C8E8] to-[#7FA8D4] flex items-center justify-center shadow-inner">
@@ -189,6 +202,14 @@ export function GachaScreen({ onBack, onObtain }: GachaScreenProps = {}) {
           ⓘ 뽑기 확률
         </button>
       </div>
+
+      {spendError && (
+        <div className="px-6 pt-3">
+          <div className="rounded-xl bg-[#FBEAEA] px-4 py-2 text-center text-xs font-semibold text-[#D08585]">
+            {spendError}
+          </div>
+        </div>
+      )}
 
       {/* Content */}
       {tab === "box" ? (
@@ -240,10 +261,10 @@ export function GachaScreen({ onBack, onObtain }: GachaScreenProps = {}) {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      setSelectedId(box.id);
-                      setPulling({ theme: box, count: 1 });
+                      startPull(box, 1);
                     }}
-                    className="bg-[#9DC59D] hover:bg-[#8FBA8F] rounded-xl py-2.5 px-3 text-center shadow-sm transition-colors"
+                    disabled={leafBalance < 250}
+                    className="bg-[#9DC59D] hover:bg-[#8FBA8F] disabled:bg-[#D4C4B0] rounded-xl py-2.5 px-3 text-center shadow-sm transition-colors"
                   >
                     <div className="text-white font-semibold text-sm">
                       1회 뽑기
@@ -258,10 +279,10 @@ export function GachaScreen({ onBack, onObtain }: GachaScreenProps = {}) {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      setSelectedId(box.id);
-                      setPulling({ theme: box, count: 5 });
+                      startPull(box, 5);
                     }}
-                    className="bg-[#F2B14A] hover:bg-[#E5A23B] rounded-xl py-2.5 px-3 text-center shadow-sm transition-colors"
+                    disabled={leafBalance < 1250}
+                    className="bg-[#F2B14A] hover:bg-[#E5A23B] disabled:bg-[#D4C4B0] rounded-xl py-2.5 px-3 text-center shadow-sm transition-colors"
                   >
                     <div className="text-white font-semibold text-sm">
                       연속 5회 뽑기

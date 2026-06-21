@@ -65,7 +65,7 @@ export function CreateHouseScreen({
   };
 
   return (
-    <div className="min-h-screen bg-[#FBF8F3] pb-10">
+    <div className="min-h-screen bg-[#FBF8F3] pb-28">
       {/* Header */}
       <div className="bg-white shadow-sm px-4 py-4 flex items-center justify-between">
         <button
