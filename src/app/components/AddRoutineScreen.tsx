@@ -109,6 +109,7 @@ export function AddRoutineScreen({
   const [photoVerify, setPhotoVerify] = useState(
     editRoutine?.photoVerify ?? false,
   );
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const toggleDay = (d: number) =>
     setDays((prev) =>
@@ -142,6 +143,7 @@ export function AddRoutineScreen({
 
   const remove = () => {
     if (editRoutine) onDelete?.(editRoutine.id);
+    setShowDeleteConfirm(false);
     onBack?.();
   };
 
@@ -407,11 +409,11 @@ export function AddRoutineScreen({
         {/* Delete (edit mode only) */}
         {isEdit && (
           <button
-            onClick={remove}
+            onClick={() => setShowDeleteConfirm(true)}
             className="w-full bg-white border border-[#F0D5D5] text-[#D08585] py-3.5 rounded-2xl font-semibold flex items-center justify-center gap-2 hover:bg-[#FBEAEA] transition-colors"
           >
             <Trash2 size={18} />
-            루틴 삭제하기
+            {"\uB8E8\uD2F4 \uC0AD\uC81C\uD558\uAE30"}
           </button>
         )}
       </div>
@@ -427,6 +429,48 @@ export function AddRoutineScreen({
           {isEdit ? "수정 완료" : "루틴 추가하기"}
         </button>
       </div>
+
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 px-6">
+          <div
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="delete-routine-title"
+            aria-describedby="delete-routine-description"
+            className="w-full max-w-sm rounded-2xl bg-white p-5 shadow-xl"
+          >
+            <div className="mb-4 flex items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#FBEAEA] text-[#D08585]">
+                <Trash2 size={20} />
+              </div>
+              <div>
+                <h3 id="delete-routine-title" className="font-bold text-[#4A403A]">
+                  {"\uB8E8\uD2F4\uC744 \uC0AD\uC81C\uD560\uAE4C\uC694?"}
+                </h3>
+                <p id="delete-routine-description" className="mt-1 text-sm text-[#8B7E74]">
+                  {"\uC815\uB9D0 \uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"}
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setShowDeleteConfirm(false)}
+                className="flex-1 rounded-full bg-[#F5F1E8] px-4 py-3 font-semibold text-[#4A403A] transition-colors hover:bg-[#E8DCC8]"
+              >
+                {"\uCDE8\uC18C"}
+              </button>
+              <button
+                type="button"
+                onClick={remove}
+                className="flex-1 rounded-full bg-[#D08585] px-4 py-3 font-semibold text-white transition-colors hover:bg-[#BE6F6F]"
+              >
+                {"\uC0AD\uC81C\uD558\uAE30"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Category manager */}
       {showCategoryManager && (

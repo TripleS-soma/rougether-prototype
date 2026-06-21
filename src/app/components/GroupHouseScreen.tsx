@@ -18,6 +18,7 @@ import {
   FURNITURE_ITEMS,
   WALLPAPERS,
   DEFAULT_WALLPAPER_ID,
+  getFurniturePlacement,
 } from "./furniture";
 import houseImg from "../../imports/집/82dee519f2b51b845193850615ada67cd091e5f7.png";
 
@@ -300,10 +301,7 @@ export function GroupHouseScreen({
                           src={item.image}
                           alt=""
                           className="absolute object-contain pointer-events-none"
-                          style={{
-                            ...item.placedStyle,
-                            zIndex: item.zIndex ?? 1,
-                          }}
+                          style={getFurniturePlacement(item)}
                         />
                       ))}
                       <div

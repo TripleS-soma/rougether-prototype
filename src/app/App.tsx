@@ -46,7 +46,7 @@ type Screen =
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>("auth");
   const [placedFurniture, setPlacedFurniture] = useState<Set<string>>(
-    new Set(["bed", "shelf", "plant", "window", "rug"])
+    new Set(["hanok-bed", "hanok-shelf", "hanok-window", "hanok-drawer", "hanok-armchair", "hanok-plant", "hanok-rug", "hanok-teatable"])
   );
   const [wallpaperId, setWallpaperId] = useState<string>("beige");
   const [ownedFurniture, setOwnedFurniture] = useState<Set<string>>(
@@ -55,11 +55,11 @@ export default function App() {
   const [visitingFriend, setVisitingFriend] = useState<string>("");
   const [editingRoutine, setEditingRoutine] = useState<Routine | null>(null);
   const [routines, setRoutines] = useState<Routine[]>([
-    { id: "1", title: "아침 7시 기상", completed: true, emoji: "☀️", category: "일정", alarmEnabled: true, time: "07:00" },
-    { id: "2", title: "독서 30분", completed: true, emoji: "📖", category: "취미", alarmEnabled: true, time: "21:30", photoVerify: true },
-    { id: "3", title: "물 2L 마시기", completed: true, emoji: "💧", category: "건강", alarmEnabled: false, time: "12:00" },
-    { id: "4", title: "영어 공부", completed: false, emoji: "✨", category: "공부", alarmEnabled: true, time: "20:00", photoVerify: true },
-    { id: "5", title: "하루 회고", completed: false, emoji: "🌙", category: "일정", alarmEnabled: true, time: "23:00" },
+    { id: "1", title: "\uC544\uCE68 7\uC2DC \uAE30\uC0C1", completed: true, emoji: "\u23F0", category: "\uC77C\uC815", alarmEnabled: true, time: "07:00" },
+    { id: "2", title: "\uB3C5\uC11C 30\uBD84", completed: true, emoji: "\uD83D\uDCDA", category: "\uCDE8\uBBF8", alarmEnabled: true, time: "21:30", photoVerify: true },
+    { id: "3", title: "\uBB3C 2L \uB9C8\uC2DC\uAE30", completed: true, emoji: "\uD83D\uDCA7", category: "\uAC74\uAC15", alarmEnabled: false, time: "12:00" },
+    { id: "4", title: "\uC601\uC5B4 \uACF5\uBD80", completed: false, emoji: "\u270F\uFE0F", category: "\uACF5\uBD80", alarmEnabled: true, time: "20:00", photoVerify: true },
+    { id: "5", title: "\uD558\uB8E8 \uD68C\uACE0", completed: false, emoji: "\uD83D\uDCDD", category: "\uC77C\uC815", alarmEnabled: true, time: "23:00" },
   ]);
 
   const [categories, setCategories] = useState<RoutineCategoryMeta[]>(
@@ -76,9 +76,9 @@ export default function App() {
 
   const deleteCategory = (id: string) => {
     setCategories((prev) => prev.filter((c) => c.id !== id));
-    // Orphaned routines fall back to "기타"
+    // Orphaned routines fall back to "疫꿸퀬?"
     setRoutines((prev) =>
-      prev.map((r) => (r.category === id ? { ...r, category: "기타" } : r))
+      prev.map((r) => (r.category === id ? { ...r, category: "疫꿸퀬?" } : r))
     );
   };
 
@@ -159,6 +159,7 @@ export default function App() {
                     title,
                     completed: false,
                     category,
+                    kind: "todo",
                   },
                 ])
               }
@@ -174,7 +175,7 @@ export default function App() {
           )}
           {currentScreen === "routineManage" && (
             <RoutineManageScreen
-              routines={routines}
+              routines={routines.filter((routine) => routine.kind !== "todo")}
               categories={categories}
               onBack={() => setCurrentScreen("myRoom")}
               onAdd={() => {
@@ -209,6 +210,7 @@ export default function App() {
                     alarmEnabled: r.alarmEnabled,
                     time: r.time,
                     photoVerify: r.photoVerify,
+                    kind: "routine",
                   },
                 ])
               }
@@ -290,35 +292,6 @@ export default function App() {
             onChange={(tab) => setCurrentScreen(screenForTab[tab])}
           />
         )}
-
-        {/* Floating screen selector (for demo purposes) */}
-        <div className="fixed top-4 right-4 z-50">
-          <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg p-2">
-            <select
-              value={currentScreen}
-              onChange={(e) => setCurrentScreen(e.target.value as Screen)}
-              className="text-xs text-[#4A403A] bg-transparent border-none outline-none cursor-pointer"
-            >
-              <option value="auth">로그인</option>
-              <option value="signup">회원가입</option>
-              <option value="onboarding">온보딩</option>
-              <option value="myRoom">나의 방</option>
-              <option value="routineManage">루틴 관리</option>
-              <option value="addRoutine">루틴 추가</option>
-              <option value="gacha">뽑기 상점</option>
-              <option value="routine">오늘의 루틴</option>
-              <option value="decor">방 꾸미기</option>
-              <option value="groupHouse">그룹의 집</option>
-              <option value="houseSearch">집 탐색</option>
-              <option value="createHouse">새 집 만들기</option>
-              <option value="groupChat">그룹톡</option>
-              <option value="friendRoom">친구 방</option>
-              <option value="growth">고양이 성장</option>
-              <option value="mission">그룹 미션</option>
-              <option value="settings">설정</option>
-            </select>
-          </div>
-        </div>
       </div>
     </div>
   );

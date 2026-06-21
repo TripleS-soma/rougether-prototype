@@ -1,7 +1,7 @@
 import { ArrowLeft, Sparkles, Check } from "lucide-react";
 import { useState } from "react";
 import { CatAvatar } from "./CatAvatar";
-import { FURNITURE_ITEMS, WALLPAPERS, DEFAULT_WALLPAPER_ID } from "./furniture";
+import { FURNITURE_ITEMS, WALLPAPERS, DEFAULT_WALLPAPER_ID, getFurniturePlacement, getFurnitureSlot } from "./furniture";
 
 interface RoomDecorScreenProps {
   onBack?: () => void;
@@ -26,7 +26,7 @@ export function RoomDecorScreen({
     : FURNITURE_ITEMS;
 
   const [placed, setPlaced] = useState<Set<string>>(
-    () => new Set(initialPlaced ?? ["bed", "shelf", "plant", "window", "rug"])
+    () => new Set(initialPlaced ?? ["hanok-bed", "hanok-shelf", "hanok-window", "hanok-drawer", "hanok-armchair", "hanok-plant", "hanok-rug", "hanok-teatable"])
   );
   const [wallpaperId, setWallpaperId] = useState<string>(
     initialWallpaperId ?? DEFAULT_WALLPAPER_ID
@@ -34,10 +34,21 @@ export function RoomDecorScreen({
   const [activeCategory, setActiveCategory] = useState("전체");
 
   const toggle = (id: string) => {
+    const selectedItem = FURNITURE_ITEMS.find((item) => item.id === id);
+    if (!selectedItem) return;
+    const selectedSlot = getFurnitureSlot(selectedItem);
+
     setPlaced((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
+      if (next.has(id)) {
+        next.delete(id);
+        return next;
+      }
+
+      FURNITURE_ITEMS.forEach((item) => {
+        if (getFurnitureSlot(item) === selectedSlot) next.delete(item.id);
+      });
+      next.add(id);
       return next;
     });
   };
@@ -85,7 +96,7 @@ export function RoomDecorScreen({
               src={item.image}
               alt={item.name}
               className="absolute object-contain pointer-events-none"
-              style={{ ...item.placedStyle, zIndex: item.zIndex ?? 1 }}
+              style={getFurniturePlacement(item)}
             />
           ))}
 

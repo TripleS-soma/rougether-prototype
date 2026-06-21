@@ -16,17 +16,27 @@ import bgSimple from "../../imports/___________.png";
 import bgPaw from "../../imports/____________.png";
 import bgFlower from "../../imports/__________.png";
 // 고즈넉 한옥 테마 가구 (뽑기 보상)
-import imgHanokBed from "../../imports/image-9.png";
-import imgHanokArmchair from "../../imports/image-10.png";
-import imgHanokDesk from "../../imports/image-11.png";
-import imgHanokShelf from "../../imports/image-12.png";
-import imgHanokRug from "../../imports/image-13.png";
-import imgHanokPlant from "../../imports/image-14.png";
-import imgHanokWindow from "../../imports/image-15.png";
-import imgHanokDrawer from "../../imports/image-16.png";
-import imgHanokTeaTable from "../../imports/image-17.png";
+import imgHanokBed from "../../imports/\uAC00\uAD6C/image-9.png";
+import imgHanokArmchair from "../../imports/\uAC00\uAD6C/image-10.png";
+import imgHanokDesk from "../../imports/\uAC00\uAD6C/image-11.png";
+import imgHanokShelf from "../../imports/\uAC00\uAD6C/image-12.png";
+import imgHanokRug from "../../imports/\uAC00\uAD6C/image-13.png";
+import imgHanokPlant from "../../imports/\uAC00\uAD6C/image-14.png";
+import imgHanokWindow from "../../imports/\uAC00\uAD6C/image-15.png";
+import imgHanokDrawer from "../../imports/\uAC00\uAD6C/image-16.png";
+import imgHanokTeaTable from "../../imports/\uAC00\uAD6C/image-17.png";
 
 export type Rarity = "일반" | "희귀" | "전설";
+
+export type FurnitureSlot =
+  | "bed"
+  | "shelf"
+  | "window"
+  | "storage"
+  | "chair"
+  | "plant"
+  | "rug"
+  | "table";
 
 export interface FurnitureItem {
   id: string;
@@ -36,6 +46,7 @@ export interface FurnitureItem {
   category: string;
   placedStyle: CSSProperties;
   zIndex?: number;
+  slot?: FurnitureSlot;
   /** Gacha theme this item belongs to (only for reward items) */
   theme?: string;
   /** Gacha rarity (only for reward items) */
@@ -105,6 +116,56 @@ export const WALLPAPERS: Wallpaper[] = [
 ];
 
 export const DEFAULT_WALLPAPER_ID = "simple";
+
+export const FURNITURE_SLOT_STYLES: Record<FurnitureSlot, CSSProperties> = {
+  shelf: { left: "11%", top: "14%", width: "22%" },
+  window: { right: "12%", top: "14%", width: "20%" },
+  bed: { left: "6%", top: "38%", width: "34%" },
+  storage: { left: "47%", top: "45%", width: "18%" },
+  chair: { right: "6%", top: "44%", width: "28%" },
+  plant: { left: "15%", bottom: "16%", width: "13%" },
+  rug: {
+    left: "33%",
+    bottom: "7%",
+    width: "38%",
+    transform: "translateX(-50%)",
+  },
+  table: { right: "8%", bottom: "13%", width: "25%" },
+};
+
+export const FURNITURE_SLOT_BY_ID: Record<string, FurnitureSlot> = {
+  bed: "bed",
+  sofa: "bed",
+  shelf: "shelf",
+  clock: "shelf",
+  window: "window",
+  drawer: "storage",
+  desk: "storage",
+  tv: "storage",
+  lamp: "chair",
+  mirror: "chair",
+  cushion: "chair",
+  plant: "plant",
+  rug: "rug",
+  "hanok-bed": "bed",
+  "hanok-shelf": "shelf",
+  "hanok-window": "window",
+  "hanok-drawer": "storage",
+  "hanok-desk": "storage",
+  "hanok-armchair": "chair",
+  "hanok-plant": "plant",
+  "hanok-rug": "rug",
+  "hanok-teatable": "table",
+};
+
+export const getFurnitureSlot = (item: FurnitureItem): FurnitureSlot =>
+  item.slot ?? FURNITURE_SLOT_BY_ID[item.id] ?? "storage";
+
+export const getFurniturePlacement = (item: FurnitureItem): CSSProperties => ({
+  ...FURNITURE_SLOT_STYLES[getFurnitureSlot(item)],
+  zIndex: item.zIndex ?? 1,
+});
+
 
 export const FURNITURE_ITEMS: FurnitureItem[] = [
   {
@@ -240,9 +301,9 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     theme: "hanok",
     rarity: "일반",
     placedStyle: {
-      left: "50%",
+      left: "33%",
       bottom: "7%",
-      width: "62%",
+      width: "38%",
       transform: "translateX(-50%)",
     },
     zIndex: 0,
@@ -255,7 +316,7 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     category: "한옥",
     theme: "hanok",
     rarity: "전설",
-    placedStyle: { right: "6%", top: "30%", width: "40%" },
+    placedStyle: { left: "6%", top: "38%", width: "34%" },
     zIndex: 2,
   },
   {
@@ -266,7 +327,7 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     category: "한옥",
     theme: "hanok",
     rarity: "희귀",
-    placedStyle: { left: "6%", top: "40%", width: "28%" },
+    placedStyle: { right: "6%", top: "44%", width: "28%" },
     zIndex: 3,
   },
   {
@@ -277,7 +338,7 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     category: "한옥",
     theme: "hanok",
     rarity: "희귀",
-    placedStyle: { right: "8%", bottom: "18%", width: "30%" },
+    placedStyle: { left: "44%", top: "43%", width: "22%" },
     zIndex: 3,
   },
   {
@@ -288,7 +349,7 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     category: "한옥",
     theme: "hanok",
     rarity: "희귀",
-    placedStyle: { left: "10%", top: "6%", width: "32%" },
+    placedStyle: { left: "11%", top: "14%", width: "22%" },
     zIndex: 1,
   },
   {
@@ -299,7 +360,7 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     category: "한옥",
     theme: "hanok",
     rarity: "일반",
-    placedStyle: { right: "12%", top: "6%", width: "24%" },
+    placedStyle: { right: "12%", top: "14%", width: "20%" },
     zIndex: 1,
   },
   {
@@ -310,7 +371,7 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     category: "한옥",
     theme: "hanok",
     rarity: "희귀",
-    placedStyle: { left: "6%", bottom: "16%", width: "26%" },
+    placedStyle: { left: "47%", top: "45%", width: "18%" },
     zIndex: 3,
   },
   {
@@ -321,7 +382,7 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     category: "한옥",
     theme: "hanok",
     rarity: "일반",
-    placedStyle: { left: "2%", bottom: "12%", width: "16%" },
+    placedStyle: { left: "15%", bottom: "16%", width: "13%" },
     zIndex: 4,
   },
   {
@@ -332,12 +393,10 @@ export const FURNITURE_ITEMS: FurnitureItem[] = [
     category: "한옥",
     theme: "hanok",
     rarity: "희귀",
-    placedStyle: { left: "50%", bottom: "8%", width: "30%", transform: "translateX(-50%)" },
+    placedStyle: { right: "8%", bottom: "13%", width: "25%" },
     zIndex: 3,
   },
 ];
 
 /** Default-owned furniture (everything except gacha reward themes) */
-export const DEFAULT_OWNED_FURNITURE_IDS: string[] = FURNITURE_ITEMS.filter(
-  (i) => !i.theme,
-).map((i) => i.id);
+export const DEFAULT_OWNED_FURNITURE_IDS: string[] = FURNITURE_ITEMS.map((i) => i.id);

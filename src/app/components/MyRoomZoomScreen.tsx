@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   Edit,
   Gift,
@@ -12,11 +12,13 @@ import {
   MoreVertical,
   Pencil,
   Trash2,
+  Download,
 } from "lucide-react";
 import {
   FURNITURE_ITEMS,
   WALLPAPERS,
   DEFAULT_WALLPAPER_ID,
+  getFurniturePlacement,
 } from "./furniture";
 import { CatAvatar } from "./CatAvatar";
 import cat1 from "../../imports/image-1.png";
@@ -89,6 +91,7 @@ export interface Routine {
   alarmEnabled?: boolean;
   time?: string; // "HH:MM" 24h
   photoVerify?: boolean;
+  kind?: "routine" | "todo";
 }
 
 /** "HH:MM" 24h -> "오전 7:00" */
@@ -139,6 +142,7 @@ export function MyRoomZoomScreen({
   const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState("");
+  const roomRef = useRef<HTMLDivElement>(null);
 
   const toggleRoutine = (id: string) => onToggleRoutine?.(id);
 
@@ -164,6 +168,52 @@ export function MyRoomZoomScreen({
   const completedCount = routines.filter(
     (r) => r.completed,
   ).length;
+  const saveRoomPhoto = async () => {
+    const room = roomRef.current;
+    if (!room) return;
+
+    const width = room.offsetWidth;
+    const height = room.offsetHeight;
+    const clone = room.cloneNode(true) as HTMLElement;
+    clone.querySelectorAll('[data-capture-hidden="true"]').forEach((node) => {
+      node.remove();
+    });
+    clone.style.width = `${width}px`;
+    clone.style.height = `${height}px`;
+
+    const serialized = new XMLSerializer().serializeToString(clone);
+    const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+        <foreignObject width="100%" height="100%">${serialized}</foreignObject>
+      </svg>
+    `;
+    const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const image = new Image();
+
+    try {
+      await new Promise<void>((resolve, reject) => {
+        image.onload = () => resolve();
+        image.onerror = () => reject(new Error("Failed to render room image"));
+        image.src = url;
+      });
+
+      const canvas = document.createElement("canvas");
+      canvas.width = width * window.devicePixelRatio;
+      canvas.height = height * window.devicePixelRatio;
+      const context = canvas.getContext("2d");
+      if (!context) return;
+      context.scale(window.devicePixelRatio, window.devicePixelRatio);
+      context.drawImage(image, 0, 0, width, height);
+
+      const link = document.createElement("a");
+      link.download = `my-room-${new Date().toISOString().slice(0, 10)}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    } finally {
+      URL.revokeObjectURL(url);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#FBF8F3] pb-24">
@@ -178,12 +228,10 @@ export function MyRoomZoomScreen({
               준서의 방
             </h2>
             <div className="flex items-center gap-2">
-              <span className="text-xs text-[#8B7E74]">
-                Lv.20
+              <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#E89A4A]">
+                <span aria-hidden="true">{"\uD83D\uDD25"}</span>
+                <span>{"7\uC77C"}</span>
               </span>
-              <div className="w-16 h-1.5 bg-[#F5F1E8] rounded-full overflow-hidden">
-                <div className="h-full w-3/4 bg-[#7FA87F] rounded-full"></div>
-              </div>
             </div>
           </div>
         </div>
@@ -199,6 +247,7 @@ export function MyRoomZoomScreen({
       <div className="relative px-4 pt-6">
         {/* Main room display */}
         <div
+          ref={roomRef}
           className="rounded-3xl relative overflow-hidden min-h-[400px]"
           style={
             wallpaper.backgroundImage
@@ -219,10 +268,7 @@ export function MyRoomZoomScreen({
               src={item.image}
               alt={item.name}
               className="absolute object-contain pointer-events-none"
-              style={{
-                ...item.placedStyle,
-                zIndex: item.zIndex ?? 1,
-              }}
+              style={getFurniturePlacement(item)}
             />
           ))}
 
@@ -240,6 +286,17 @@ export function MyRoomZoomScreen({
               alt="cat"
               className="w-[120px] h-[120px] object-contain"
             />
+          </button>
+
+          <button
+            type="button"
+            data-capture-hidden="true"
+            onClick={saveRoomPhoto}
+            className="absolute bottom-4 right-4 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-[#4A403A] shadow-lg backdrop-blur-sm transition-colors hover:bg-white"
+            aria-label="\uB0B4 \uBC29 \uC0AC\uC9C4 \uC800\uC7A5"
+            title="\uB0B4 \uBC29 \uC0AC\uC9C4 \uC800\uC7A5"
+          >
+            <Download size={19} />
           </button>
         </div>
       </div>
@@ -383,6 +440,11 @@ export function MyRoomZoomScreen({
                                   >
                                     {routine.title}
                                   </span>
+                                  {routine.kind === "todo" && (
+                                    <span className="mt-0.5 inline-flex w-fit rounded-full bg-[#F5E6D3] px-2 py-0.5 text-[10px] font-semibold text-[#8B7E74]">
+                                      {"\uD22C\uB450"}
+                                    </span>
+                                  )}
                                   {(routine.alarmEnabled && routine.time) ||
                                   routine.photoVerify ? (
                                     <div className="flex items-center gap-2 mt-0.5">
