@@ -16,8 +16,14 @@ import {
   Trash2,
 } from "lucide-react";
 import { useState } from "react";
-import { CatAvatar } from "./CatAvatar";
-import { CharacterId, DEFAULT_CHARACTER_ID, getCharacterOption } from "./character";
+import { CharacterId, DEFAULT_CHARACTER_ID } from "./character";
+import {
+  CharacterAvatar,
+  DEFAULT_DESIGN_ID,
+  DesignId,
+  cx,
+  getDesign,
+} from "../design-system";
 import {
   FURNITURE_ITEMS,
   WALLPAPERS,
@@ -40,6 +46,7 @@ interface GroupHouseScreenProps {
   placedFurniture?: Set<string>;
   wallpaperId?: string;
   characterId?: CharacterId;
+  designId?: DesignId;
   leafBalance?: number;
 }
 
@@ -50,6 +57,7 @@ export function GroupHouseScreen({
   placedFurniture,
   wallpaperId,
   characterId = DEFAULT_CHARACTER_ID,
+  designId = DEFAULT_DESIGN_ID,
   leafBalance = 0,
 }: GroupHouseScreenProps = {}) {
   const placed = placedFurniture ?? new Set<string>();
@@ -113,7 +121,7 @@ export function GroupHouseScreen({
     },
   ];
 
-  const character = getCharacterOption(characterId);
+  const design = getDesign(designId);
   const [houseIndex, setHouseIndex] = useState(0);
   const [showMembers, setShowMembers] = useState(false);
   const [kickedMembers, setKickedMembers] = useState<Set<string>>(() => new Set());
@@ -139,8 +147,8 @@ export function GroupHouseScreen({
 
   if (showMembers) {
     return (
-      <div className="min-h-screen bg-[#FBF8F3] pb-24">
-        <div className="bg-white shadow-sm px-5 py-4 flex items-center justify-between">
+      <div className={cx("min-h-screen pb-24", design.screen)}>
+        <div className={cx(design.header, "px-5 py-4 flex items-center justify-between")}>
           <div>
             <p className="text-xs font-semibold text-[#7FA87F]">{currentHouse.title}</p>
             <h2 className="text-lg font-bold text-[#4A403A]">{"\uAD6C\uC131\uC6D0 \uAD00\uB9AC"}</h2>
@@ -191,9 +199,9 @@ export function GroupHouseScreen({
                   {isKicked(member) ? (
                     <span className="text-[10px] font-semibold text-[#B8A593]">{"\uBE48\uBC29"}</span>
                   ) : member.isMine ? (
-                    <img src={character.images[0]} alt={character.name} className="h-9 w-9 object-contain" />
+                    <CharacterAvatar characterId={characterId} designId={designId} size={36} />
                   ) : (
-                    <CatAvatar size={36} />
+                    <CharacterAvatar characterId={characterId} designId={designId} size={36} />
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
@@ -448,10 +456,11 @@ export function GroupHouseScreen({
                         className="absolute bottom-3 left-1/2 -translate-x-1/2"
                         style={{ zIndex: 5 }}
                       >
-                        <img
-                          src={character.images[0]}
-                          alt={character.name}
-                          className="h-10 w-10 object-contain"
+                        <CharacterAvatar
+                          characterId={characterId}
+                          designId={designId}
+                          size={40}
+                          variant="room"
                         />
                       </div>
                       <div className="absolute top-0.5 right-0.5 bg-[#FFE08A] text-[8px] font-bold px-1.5 py-0.5 rounded-full text-[#4A403A] z-10">
@@ -468,7 +477,7 @@ export function GroupHouseScreen({
                         }}
                       ></div>
                       <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
-                        <CatAvatar size={40} />
+                        <CharacterAvatar characterId={characterId} designId={designId} size={40} />
                       </div>
                     </>
                   )}

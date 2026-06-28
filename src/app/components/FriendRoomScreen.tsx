@@ -8,7 +8,14 @@ import {
   Sparkles,
   ThumbsUp,
 } from "lucide-react";
-import { CharacterId, DEFAULT_CHARACTER_ID, getCharacterOption } from "./character";
+import { CharacterId, DEFAULT_CHARACTER_ID } from "./character";
+import {
+  CharacterAvatar,
+  DEFAULT_DESIGN_ID,
+  DesignId,
+  cx,
+  getDesign,
+} from "../design-system";
 import {
   FURNITURE_ITEMS,
   WALLPAPERS,
@@ -24,6 +31,7 @@ interface FriendRoomScreenProps {
   wallpaperId?: string;
   routines?: Routine[];
   characterId?: CharacterId;
+  designId?: DesignId;
 }
 
 const defaultRoutines: Routine[] = [
@@ -49,12 +57,13 @@ export function FriendRoomScreen({
   wallpaperId,
   routines = defaultRoutines,
   characterId = DEFAULT_CHARACTER_ID,
+  designId = DEFAULT_DESIGN_ID,
 }: FriendRoomScreenProps = {}) {
   const placed = placedFurniture ?? new Set<string>();
   const wallpaper =
     WALLPAPERS.find((w) => w.id === (wallpaperId ?? DEFAULT_WALLPAPER_ID)) ??
     WALLPAPERS[0];
-  const character = getCharacterOption(characterId);
+  const design = getDesign(designId);
   const visibleRoutines = routines.length > 0 ? routines : defaultRoutines;
   const completedCount = visibleRoutines.filter((r) => r.completed).length;
   const progress = visibleRoutines.length
@@ -62,8 +71,8 @@ export function FriendRoomScreen({
     : 0;
 
   return (
-    <div className="min-h-screen bg-[#FBF8F3] pb-24">
-      <div className="bg-white shadow-sm px-6 py-4 flex items-center justify-between">
+    <div className={cx("min-h-screen pb-24", design.screen)}>
+      <div className={cx(design.header, "px-6 py-4 flex items-center justify-between")}>
         <div className="flex items-center gap-3 min-w-0">
           <button
             onClick={onBack}
@@ -72,9 +81,12 @@ export function FriendRoomScreen({
           >
             <ArrowLeft size={20} />
           </button>
-          <div className="w-10 h-10 rounded-full bg-[#F5E6D3] flex items-center justify-center overflow-hidden p-1 flex-shrink-0">
-            <img src={character.images[0]} alt={character.name} className="h-9 w-9 object-contain" />
-          </div>
+          <CharacterAvatar
+            characterId={characterId}
+            designId={designId}
+            size={40}
+            className="flex-shrink-0"
+          />
           <div className="min-w-0">
             <h2 className="text-lg font-bold text-[#4A403A] truncate">
               {friendName}{"\uC758 \uBC29"}
@@ -116,10 +128,11 @@ export function FriendRoomScreen({
             className="absolute bottom-12 left-1/2 -translate-x-1/2"
             style={{ zIndex: 5 }}
           >
-            <img
-              src={character.images[0]}
-              alt={character.name}
-              className="w-[120px] h-[120px] object-contain"
+            <CharacterAvatar
+              characterId={characterId}
+              designId={designId}
+              size={120}
+              variant="room"
             />
           </div>
         </div>

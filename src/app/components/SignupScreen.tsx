@@ -133,7 +133,7 @@ export function SignupScreen({ onBack, onSignupSuccess }: SignupScreenProps = {}
           마을의 새 친구를 환영해요 🐾
         </h1>
         <p className="text-sm text-[#8B7E74]">
-          정보를 입력하고 나만의 루틴 빌리지를 시작하세요
+          정보를 입력하고 나만의 루게더를 시작하세요
         </p>
       </div>
 

@@ -20,8 +20,14 @@ import {
   DEFAULT_WALLPAPER_ID,
   getFurniturePlacement,
 } from "./furniture";
-import { CatAvatar } from "./CatAvatar";
 import { CharacterId, DEFAULT_CHARACTER_ID, getCharacterOption } from "./character";
+import {
+  CharacterAvatar,
+  DEFAULT_DESIGN_ID,
+  DesignId,
+  cx,
+  getDesign,
+} from "../design-system";
 
 export type RoutineCategory = string;
 
@@ -98,6 +104,7 @@ interface MyRoomZoomScreenProps {
   onRenameRoutine?: (id: string, title: string) => void;
   onDeleteRoutine?: (id: string) => void;
   characterId?: CharacterId;
+  designId?: DesignId;
 }
 
 export function MyRoomZoomScreen({
@@ -113,6 +120,7 @@ export function MyRoomZoomScreen({
   onRenameRoutine,
   onDeleteRoutine,
   characterId = DEFAULT_CHARACTER_ID,
+  designId = DEFAULT_DESIGN_ID,
 }: MyRoomZoomScreenProps = {}) {
   const placed = placedFurniture ?? new Set<string>();
   const wallpaper =
@@ -121,6 +129,7 @@ export function MyRoomZoomScreen({
     ) ?? WALLPAPERS[0];
 
   const character = getCharacterOption(characterId);
+  const design = getDesign(designId);
   const [characterFrame, setCharacterFrame] = useState(0);
   const [addingCategory, setAddingCategory] = useState<string | null>(null);
   const [newTodo, setNewTodo] = useState("");
@@ -201,17 +210,11 @@ export function MyRoomZoomScreen({
   };
 
   return (
-    <div className="min-h-screen bg-[#FBF8F3] pb-24">
+    <div className={cx("min-h-screen pb-24", design.screen)}>
       {/* Header */}
-      <div className="bg-white shadow-sm px-6 py-4 flex items-center justify-between">
+      <div className={cx(design.header, "px-6 py-4 flex items-center justify-between")}>
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-[#F5E6D3] flex items-center justify-center overflow-hidden p-1">
-            <img
-              src={character.images[0]}
-              alt={character.name}
-              className="h-9 w-9 object-contain"
-            />
-          </div>
+          <CharacterAvatar characterId={characterId} designId={designId} size={40} />
           <div>
             <h2 className="text-lg font-bold text-[#4A403A]">
               준서의 방
@@ -261,7 +264,7 @@ export function MyRoomZoomScreen({
             />
           ))}
 
-          {/* Cat character (click to change pose) */}
+          {/* Character (click to change pose) */}
           <button
             onClick={() =>
               setCharacterFrame((i) => (i + 1) % character.images.length)
@@ -270,10 +273,12 @@ export function MyRoomZoomScreen({
             style={{ zIndex: 5 }}
             aria-label="\uCE90\uB9AD\uD130 \uC0AC\uC9C4 \uBC14\uAFB8\uAE30"
           >
-            <img
-              src={character.images[characterFrame]}
-              alt={character.name}
-              className="w-[120px] h-[120px] object-contain"
+            <CharacterAvatar
+              characterId={characterId}
+              designId={designId}
+              frame={characterFrame}
+              size={120}
+              variant="room"
             />
           </button>
 
@@ -552,9 +557,15 @@ export function MyRoomZoomScreen({
 
         {/* Reward Card */}
         <div className="bg-gradient-to-br from-[#7FA87F] to-[#6D926D] rounded-2xl p-6 shadow-lg mb-6 relative overflow-hidden">
-          {/* Happy cat decoration */}
+          {/* Character decoration */}
           <div className="absolute -top-4 -right-4 opacity-20">
-            <CatAvatar size={100} variant="happy" />
+            <CharacterAvatar
+              characterId={characterId}
+              designId={designId}
+              frame={1}
+              size={100}
+              variant="plain"
+            />
           </div>
 
           <div className="relative z-10">

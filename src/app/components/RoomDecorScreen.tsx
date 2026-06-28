@@ -1,7 +1,14 @@
 import { ArrowLeft, Sparkles, Check } from "lucide-react";
 import { useState } from "react";
 import { FURNITURE_ITEMS, WALLPAPERS, DEFAULT_WALLPAPER_ID, getFurniturePlacement, getFurnitureSlot } from "./furniture";
-import { CharacterId, DEFAULT_CHARACTER_ID, getCharacterOption } from "./character";
+import { CharacterId, DEFAULT_CHARACTER_ID } from "./character";
+import {
+  CharacterAvatar,
+  DEFAULT_DESIGN_ID,
+  DesignId,
+  cx,
+  getDesign,
+} from "../design-system";
 
 interface RoomDecorScreenProps {
   onBack?: () => void;
@@ -11,6 +18,7 @@ interface RoomDecorScreenProps {
   owned?: Set<string>;
   onApply?: (placed: Set<string>, wallpaperId: string) => void;
   characterId?: CharacterId;
+  designId?: DesignId;
 }
 
 export function RoomDecorScreen({
@@ -20,8 +28,9 @@ export function RoomDecorScreen({
   owned,
   onApply,
   characterId = DEFAULT_CHARACTER_ID,
+  designId = DEFAULT_DESIGN_ID,
 }: RoomDecorScreenProps = {}) {
-  const character = getCharacterOption(characterId);
+  const design = getDesign(designId);
   const categories = ["전체", "벽지", "가구", "장식", "조명", "러그", "한옥"];
 
   const ownedItems = owned
@@ -69,9 +78,9 @@ export function RoomDecorScreen({
     WALLPAPERS.find((w) => w.id === wallpaperId) ?? WALLPAPERS[0];
 
   return (
-    <div className="min-h-screen bg-[#FBF8F3] pb-32">
+    <div className={cx("min-h-screen pb-32", design.screen)}>
       {/* Header */}
-      <div className="bg-white shadow-sm px-6 py-4 flex items-center gap-3">
+      <div className={cx(design.header, "px-6 py-4 flex items-center gap-3")}>
         <button onClick={onBack} className="text-[#8B7E74] hover:text-[#4A403A] transition-colors">
           <ArrowLeft size={22} />
         </button>
@@ -104,10 +113,11 @@ export function RoomDecorScreen({
           ))}
 
           <div className="absolute bottom-12 left-1/2 -translate-x-1/2" style={{ zIndex: 5 }}>
-            <img
-              src={character.images[0]}
-              alt={character.name}
-              className="w-[120px] h-[120px] object-contain"
+            <CharacterAvatar
+              characterId={characterId}
+              designId={designId}
+              size={120}
+              variant="room"
             />
           </div>
         </div>

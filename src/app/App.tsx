@@ -20,6 +20,7 @@ import { CreateHouseScreen } from "./components/CreateHouseScreen";
 import { BottomNav, BottomNavTab } from "./components/BottomNav";
 import { DEFAULT_OWNED_FURNITURE_IDS } from "./components/furniture";
 import { CharacterId, DEFAULT_CHARACTER_ID } from "./components/character";
+import { DEFAULT_DESIGN_ID, DesignId, cx, getDesign } from "./design-system";
 
 type Screen =
   | "decor"
@@ -43,6 +44,7 @@ export default function App() {
   );
   const [wallpaperId, setWallpaperId] = useState<string>("beige");
   const [characterId, setCharacterId] = useState<CharacterId>(DEFAULT_CHARACTER_ID);
+  const [designId, setDesignId] = useState<DesignId>(DEFAULT_DESIGN_ID);
   const [leafBalance, setLeafBalance] = useState(5600);
   const [ownedFurniture, setOwnedFurniture] = useState<Set<string>>(
     () => new Set(DEFAULT_OWNED_FURNITURE_IDS)
@@ -71,9 +73,9 @@ export default function App() {
 
   const deleteCategory = (id: string) => {
     setCategories((prev) => prev.filter((c) => c.id !== id));
-    // Orphaned routines fall back to "疫꿸퀬?"
+    // Orphaned routines fall back to 기타.
     setRoutines((prev) =>
-      prev.map((r) => (r.category === id ? { ...r, category: "疫꿸퀬?" } : r))
+      prev.map((r) => (r.category === id ? { ...r, category: "기타" } : r))
     );
   };
 
@@ -98,10 +100,11 @@ export default function App() {
     house: "groupHouse",
     settings: "settings",
   };
+  const design = getDesign(designId);
 
   return (
-    <div className="size-full flex items-center justify-center bg-[#E8DCC8]">
-      <div className="w-full max-w-md h-full bg-[#FBF8F3] relative shadow-2xl overflow-hidden">
+    <div className={cx("size-full flex items-center justify-center", design.appShell)}>
+      <div className={cx("w-full max-w-md h-full relative shadow-2xl overflow-hidden", design.screen)}>
         <div className="h-full overflow-y-auto" key={currentScreen}>
           {currentScreen === "decor" && (
             <RoomDecorScreen
@@ -110,6 +113,7 @@ export default function App() {
               initialWallpaperId={wallpaperId}
               owned={ownedFurniture}
               characterId={characterId}
+              designId={designId}
               onApply={(next, wp) => {
                 setPlacedFurniture(next);
                 setWallpaperId(wp);
@@ -127,6 +131,7 @@ export default function App() {
               placedFurniture={placedFurniture}
               wallpaperId={wallpaperId}
               characterId={characterId}
+              designId={designId}
               leafBalance={leafBalance}
             />
           )}
@@ -140,6 +145,7 @@ export default function App() {
               routines={routines}
               categories={categories}
               characterId={characterId}
+              designId={designId}
               onToggleRoutine={toggleRoutine}
               onQuickAddRoutine={(category, title) =>
                 setRoutines((prev) => [
@@ -237,12 +243,14 @@ export default function App() {
               wallpaperId={wallpaperId}
               routines={routines.filter((routine) => routine.kind !== "todo")}
               characterId={characterId}
+              designId={designId}
             />
           )}
           {currentScreen === "auth" && (
             <AuthScreen
               onAuthSuccess={() => setCurrentScreen("onboarding")}
               onGoSignup={() => setCurrentScreen("signup")}
+              designId={designId}
             />
           )}
           {currentScreen === "signup" && (
@@ -253,6 +261,7 @@ export default function App() {
           )}
           {currentScreen === "onboarding" && (
             <OnboardingScreen
+              designId={designId}
               onDone={(_, selectedCharacterId) => {
                 if (selectedCharacterId) setCharacterId(selectedCharacterId);
                 setCurrentScreen("myRoom");
@@ -287,13 +296,18 @@ export default function App() {
             />
           )}
           {currentScreen === "settings" && (
-            <SettingsScreen onLogout={() => setCurrentScreen("auth")} />
+            <SettingsScreen
+              designId={designId}
+              onChangeDesign={setDesignId}
+              onLogout={() => setCurrentScreen("auth")}
+            />
           )}
         </div>
 
         {tabForScreen[currentScreen] && (
           <BottomNav
             active={tabForScreen[currentScreen]!}
+            designId={designId}
             onChange={(tab) => setCurrentScreen(screenForTab[tab])}
           />
         )}

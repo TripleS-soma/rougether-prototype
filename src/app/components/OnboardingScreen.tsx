@@ -1,10 +1,17 @@
 import { useState } from "react";
 import { BookOpen, BriefcaseBusiness, Dumbbell, Moon, Sparkles, Home, Check } from "lucide-react";
-import { CatAvatar } from "./CatAvatar";
+import {
+  CharacterAvatar,
+  DEFAULT_DESIGN_ID,
+  DesignId,
+  cx,
+  getDesign,
+} from "../design-system";
 import { CHARACTER_OPTIONS, CharacterId, DEFAULT_CHARACTER_ID } from "./character";
 
 interface OnboardingScreenProps {
   onDone?: (goals?: string[], characterId?: CharacterId) => void;
+  designId?: DesignId;
 }
 
 interface Slide {
@@ -23,7 +30,7 @@ const SLIDES: Slide[] = [
     ring: "#D4C4B0",
     title: "\uB8E8\uAC8C\uB354\uC5D0 \uC624\uC2E0 \uAC78 \uD658\uC601\uD574\uC694",
     description:
-      "\uB9E4\uC77C\uC758 \uC791\uC740 \uB8E8\uD2F4\uC774 \uBAA8\uC5EC \uB098\uB9CC\uC758 \uB9C8\uC744\uC744 \uB9CC\uB4E4\uC5B4\uAC00\uC694.\n\uACE0\uC591\uC774 \uCE5C\uAD6C\uC640 \uD568\uAED8 \uC2DC\uC791\uD574\uBCFC\uAE4C\uC694?",
+      "\uB9E4\uC77C\uC758 \uC791\uC740 \uB8E8\uD2F4\uC774 \uBAA8\uC5EC \uB098\uB9CC\uC758 \uB9C8\uC744\uC744 \uB9CC\uB4E4\uC5B4\uAC00\uC694.\n\uCE90\uB9AD\uD130 \uCE5C\uAD6C\uC640 \uD568\uAED8 \uC2DC\uC791\uD574\uBCFC\uAE4C\uC694?",
     showCat: true,
   },
   {
@@ -40,7 +47,7 @@ const SLIDES: Slide[] = [
     ring: "#D4A88E",
     title: "\uBC29\uC744 \uAFB8\uBBF8\uACE0 \uCE90\uB9AD\uD130\uB97C \uD0A4\uC6CC\uC694",
     description:
-      "\uB8E8\uD2F4\uC744 \uC644\uB8CC\uD560\uC218\uB85D \uACE0\uC591\uC774\uAC00 \uC131\uC7A5\uD558\uACE0\n\uBCF4\uC0C1\uC73C\uB85C \uBC29\uC744 \uB354 \uB530\uB73B\uD558\uAC8C \uCC44\uC6CC\uAC00\uC694.",
+      "\uB8E8\uD2F4\uC744 \uC644\uB8CC\uD560\uC218\uB85D \uCE90\uB9AD\uD130\uAC00 \uC131\uC7A5\uD558\uACE0\n\uBCF4\uC0C1\uC73C\uB85C \uBC29\uC744 \uB354 \uB530\uB73B\uD558\uAC8C \uCC44\uC6CC\uAC00\uC694.",
   },
   {
     emoji: "\uD83D\uDC6B",
@@ -62,7 +69,11 @@ const GOALS = [
   { id: "habit", label: "\uC0DD\uD65C \uC2B5\uAD00", Icon: Sparkles, color: "#E89A4A", bg: "#FFF0D8" },
 ];
 
-export function OnboardingScreen({ onDone }: OnboardingScreenProps = {}) {
+export function OnboardingScreen({
+  onDone,
+  designId = DEFAULT_DESIGN_ID,
+}: OnboardingScreenProps = {}) {
+  const design = getDesign(designId);
   const [index, setIndex] = useState(0);
   const [showGoalSurvey, setShowGoalSurvey] = useState(false);
   const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
@@ -86,7 +97,7 @@ export function OnboardingScreen({ onDone }: OnboardingScreenProps = {}) {
 
   if (showCharacterSelect) {
     return (
-      <div className="min-h-screen bg-[#FBF8F3] flex flex-col">
+      <div className={cx("min-h-screen flex flex-col", design.screen)}>
         <div className="px-6 pt-8 pb-4">
           <div className="w-14 h-14 rounded-2xl bg-[#FFF0D8] flex items-center justify-center mb-5">
             <Sparkles size={26} className="text-[#E89A4A]" />
@@ -108,19 +119,15 @@ export function OnboardingScreen({ onDone }: OnboardingScreenProps = {}) {
                 type="button"
                 onClick={() => setSelectedCharacter(character.id)}
                 className={`w-full min-h-[112px] rounded-2xl bg-white p-4 text-left shadow-sm transition-all flex items-center gap-4 ${
-                  selected ? "ring-2 ring-[#7FA87F] shadow-md" : "hover:shadow-md"
+                  selected ? "ring-2 " + design.activeRing + " shadow-md" : "hover:shadow-md"
                 }`}
               >
-                <span
-                  className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl"
-                  style={{ backgroundColor: character.bg }}
-                >
-                  <img
-                    src={character.images[0]}
-                    alt={character.name}
-                    className="h-16 w-16 object-contain"
-                  />
-                </span>
+                <CharacterAvatar
+                  characterId={character.id}
+                  designId={designId}
+                  size={80}
+                  variant="tile"
+                />
                 <span className="min-w-0 flex-1">
                   <span className="block font-semibold text-[#4A403A]">
                     {character.name}
@@ -160,7 +167,7 @@ export function OnboardingScreen({ onDone }: OnboardingScreenProps = {}) {
   if (showGoalSurvey) {
     const canStart = selectedGoals.length > 0;
     return (
-      <div className="min-h-screen bg-[#FBF8F3] flex flex-col">
+      <div className={cx("min-h-screen flex flex-col", design.screen)}>
         <div className="px-6 pt-8 pb-4">
           <div className="w-14 h-14 rounded-2xl bg-[#E4F0DC] flex items-center justify-center mb-5">
             <Sparkles size={26} className="text-[#7FA87F]" />
@@ -183,7 +190,7 @@ export function OnboardingScreen({ onDone }: OnboardingScreenProps = {}) {
                   type="button"
                   onClick={() => toggleGoal(id)}
                   className={`relative min-h-[112px] rounded-2xl bg-white p-4 text-left shadow-sm transition-all ${
-                    selected ? "ring-2 ring-[#7FA87F] shadow-md" : "hover:shadow-md"
+                    selected ? "ring-2 " + design.activeRing + " shadow-md" : "hover:shadow-md"
                   }`}
                 >
                   <span
@@ -226,7 +233,7 @@ export function OnboardingScreen({ onDone }: OnboardingScreenProps = {}) {
   }
 
   return (
-    <div className="min-h-screen bg-[#FBF8F3] flex flex-col">
+    <div className={cx("min-h-screen flex flex-col", design.screen)}>
       <div className="flex justify-end px-6 pt-5 h-12">
         {!isLast && (
           <button
@@ -244,7 +251,13 @@ export function OnboardingScreen({ onDone }: OnboardingScreenProps = {}) {
           style={{ border: `3px solid ${slide.ring}` }}
         >
           {slide.showCat ? (
-            <CatAvatar size={140} variant="happy" />
+            <CharacterAvatar
+              characterId="cat"
+              designId={designId}
+              size={140}
+              frame={1}
+              variant="plain"
+            />
           ) : (
             <span className="text-7xl">{slide.emoji}</span>
           )}
